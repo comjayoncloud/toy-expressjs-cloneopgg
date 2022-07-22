@@ -1,3 +1,9 @@
+// api token을 이용하여 Riot Api서버에서 데이터를 받아오는 코드
+// 순서 :
+// 1. ID를 통해 정보 검색하여 Puuid 정보 get
+// 2. Puuid를 통해 matchid 20개 받아옴
+// 3. matchid를 통해 게임 데이터를 받아와서 쓰고 싶은 데이터만 포맷하여 respond
+
 const express = require("express");
 const app = express();
 const port = 8080;
@@ -39,22 +45,19 @@ app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
 
+//puuid 받아 오는 함수
 getSummoner = async (name) => {
-  // api - axios ver
-
   const url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}`;
   const encoded = encodeURI(url);
-  // puuid 가져오기
   const summoner = await axios.get(encoded, {
     headers: {
       "X-Riot-Token": api_token,
     },
   });
-  console.log(summoner.data);
   return summoner.data;
 };
 
-//matchid 받아오기 ["1232141","123141421"]
+//matchid 받아 오는 함수 ["1232141","123141421" ... ]
 getMatchId = async (puuid) => {
   const matchId = await axios.get(
     `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}`,
@@ -64,12 +67,10 @@ getMatchId = async (puuid) => {
       },
     }
   );
-  console.log(puuid);
-  console.log(matchId.data);
   return matchId.data;
 };
 
-// 게임 내용정보 얻어와서 json 형태로 내가 맘에들게하는중
+// api에서 가져온 데이터를 json 형태로 커스텀마이징 하는 함수
 getMatch = async (s, summoner) => {
   const matchInfo = await axios.get(
     `https://asia.api.riotgames.com/lol/match/v5/matches/${s}`,
@@ -108,9 +109,9 @@ getMatch = async (s, summoner) => {
   }
 
   let allInfo = {
-    gameType: matchInfo.data.info.gameMode, // 확실
-    gameResult: win, // 수정 완료 자기자신
-    champName: championName, // 수정완료
+    gameType: matchInfo.data.info.gameMode,
+    gameResult: win,
+    champName: championName,
     gameStat: stat,
     myTeam: myteamlist,
     notmyTeam: notmyteamlist,
