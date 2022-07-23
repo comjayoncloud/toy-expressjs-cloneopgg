@@ -12,7 +12,7 @@ const axios = require("axios");
 const { get } = require("request");
 const cors = require("cors");
 
-app.use(cors());
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
 
 const api_token = "RGAPI-eb2c41d8-6ca9-448d-a14b-43b207e6ac32";
