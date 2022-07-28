@@ -17,6 +17,7 @@ app.use(express.json());
 
 const api_token = "RGAPI-76b3a158-277f-40c9-86de-39400db31b01";
 
+//test
 app.get("/api/allinfo", async (req, res) => {
   console.log("connected");
 
