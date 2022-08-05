@@ -21,9 +21,7 @@ const api_token = "RGAPI-13c3960f-594e-4f94-83db-6ead41f1df1f";
 app.get("/api/allinfo", async (req, res) => {
   console.log("connected");
 
-  // const id = req.query.id;
-  console.log(req.query);
-  const id = "빵뒤를흔드록바";
+  const id = req.query.id;
 
   const summoner = await getSummoner(id);
 
