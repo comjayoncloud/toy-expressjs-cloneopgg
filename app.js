@@ -15,7 +15,7 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
-const api_token = "RGAPI-826ed1ad-6e0d-421f-ae82-9b5222260c47";
+const api_token = "RGAPI-fbc9fd46-318b-49a0-8012-a8d47aeaf01a";
 
 //test
 app.get("/api/allinfo", async (req, res) => {
