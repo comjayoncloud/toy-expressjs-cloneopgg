@@ -15,7 +15,7 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
-const api_token = "https://www.youtube.com/watch?v=JsYQmJfklfk";
+const api_token = "RGAPI-f7127fbe-44d5-4698-80ad-1a66425d8c01";
 
 //test
 app.get("/api/allinfo", async (req, res) => {
