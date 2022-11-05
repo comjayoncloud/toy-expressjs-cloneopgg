@@ -36,6 +36,8 @@ app.get("/api/allinfo", async (req, res) => {
       matchList.push(await getMatch(matchId, summoner));
     } catch (e) {}
   }
+  res.header("Access-Control-Allow-Origin", "*");
+
   res.json(matchList);
 });
 
