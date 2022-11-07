@@ -1,8 +1,8 @@
-// api token을 이용하여 Riot Api서버에서 데이터를 받아오는 코드
+// api token을 이용하여 Riot Api서버에서 데이터를 받아온후 커스텀 마이징 후 노드서버에서 요청시 json 반환
 // 순서 :
-// 1. ID를 통해 정보 검색하여 Puuid 정보 get
-// 2. Puuid를 통해 matchid 20개 받아옴
-// 3. matchid를 통해 게임 데이터를 받아와서 쓰고 싶은 데이터만 포맷하여 respond
+// 1. getSummoner()
+// 2. getMatchId()
+// 3. getMatch()
 
 const express = require("express");
 const app = express();
@@ -15,9 +15,10 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
-const api_token = "RGAPI-496e82c7-b1f1-41c3-9e8b-cfe613fda298";
+const api_token = "RGAPI-1bb90428-3a19-4b60-9e7e-196993128a38";
 
-//test
+// get 요청왔을때 respond 하는 함수
+
 app.get("/api/allinfo", async (req, res) => {
   console.log("connected");
 
@@ -34,10 +35,11 @@ app.get("/api/allinfo", async (req, res) => {
   for (const matchId of matchIdList) {
     try {
       matchList.push(await getMatch(matchId, summoner));
-    } catch (e) {}
+    } catch (e) {
+      console.log("에러났어요");
+    }
   }
   res.header("Access-Control-Allow-Origin", "*");
-
   res.json(matchList);
 });
 
@@ -45,7 +47,7 @@ app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
 
-//puuid 받아 오는 함수
+//puuid 요청하는 함수
 getSummoner = async (name) => {
   const url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}`;
   const encoded = encodeURI(url);
@@ -57,7 +59,7 @@ getSummoner = async (name) => {
   return summoner.data;
 };
 
-//matchid 받아 오는 함수 ["1232141","123141421" ... ]
+//matchid 요청하는 함수  ex) ["1232141","123141421" ... ]
 getMatchId = async (puuid) => {
   const matchId = await axios.get(
     `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}`,
@@ -70,7 +72,7 @@ getMatchId = async (puuid) => {
   return matchId.data;
 };
 
-// api에서 가져온 데이터를 json 형태로 커스텀마이징 하는 함수
+// riot api 에서 한 아이디에 대해 데이터를 요청 후 데이터를 커스텀마이징
 getMatch = async (s, summoner) => {
   const matchInfo = await axios.get(
     `https://asia.api.riotgames.com/lol/match/v5/matches/${s}`,
