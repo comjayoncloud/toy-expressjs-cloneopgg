@@ -1,5 +1,6 @@
 // api token을 이용하여 Riot Api서버에서 데이터를 받아온후 커스텀 마이징 후 노드서버에서 요청시 json 반환
 // 순서 :
+// 0. app.get()
 // 1. getSummoner()
 // 2. getMatchId()
 // 3. getMatch()
@@ -15,9 +16,9 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
-const api_token = "RGAPI-a41dc6b5-ab79-49a9-954b-117fc6980ffa";
+const api_token = "RGAPI-f6764dac-bd6d-4d58-bea0-6fa1e1c60696";
 
-// get 요청왔을때 respond 하는 함수
+// 0. get 요청왔을때 respond 하는 함수
 
 app.get("/api/allinfo", async (req, res) => {
   console.log("connected");
@@ -47,9 +48,10 @@ app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
 
-//puuid 요청하는 함수
+// 1. puuid 요청하는 함수
 getSummoner = async (name) => {
   const url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}`;
+  // 인코딩
   const encoded = encodeURI(url);
   const summoner = await axios.get(encoded, {
     headers: {
@@ -59,7 +61,7 @@ getSummoner = async (name) => {
   return summoner.data;
 };
 
-//matchid 요청하는 함수  ex) ["1232141","123141421" ... ]
+// 2. 최근전적 20개 matchid 요청하는 함수   ex) ["1232141","123141421" ... ]
 getMatchId = async (puuid) => {
   const matchId = await axios.get(
     `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}`,
@@ -69,13 +71,14 @@ getMatchId = async (puuid) => {
       },
     }
   );
+
   return matchId.data;
 };
 
-// riot api 에서 한 아이디에 대해 데이터를 요청 후 데이터를 커스텀마이징
-getMatch = async (s, summoner) => {
+// 3. riot api 에서 한 아이디에 대해 데이터를 요청 후 데이터를 커스텀마이징
+getMatch = async (matchId, summoner) => {
   const matchInfo = await axios.get(
-    `https://asia.api.riotgames.com/lol/match/v5/matches/${s}`,
+    `https://asia.api.riotgames.com/lol/match/v5/matches/${matchId}`,
     {
       headers: {
         "X-Riot-Token": api_token,
@@ -83,21 +86,38 @@ getMatch = async (s, summoner) => {
     }
   );
   const participants = matchInfo.data.info.participants;
-
   let championName = null;
   let win = null;
   let stat = null;
+
+  let summonerLevel = null;
+  let timePlayed = null;
+  let killParticipation = null;
+
   let myteamlist = [];
   let notmyteamlist = [];
+  let summonerItem = [];
 
+  // 입력받은 유저의 정보
   participants.forEach((x, index) => {
     if (x.puuid == summoner.puuid) {
       championName = x.championName;
       win = x.win ? "승" : "패";
       stat = x.kills + "/" + x.deaths + "/" + x.assists;
+      summonerLevel = x.summonerLevel;
+      timePlayed = x.timePlayed;
+      killParticipation = Math.round(x.challenges.killParticipation * 100);
+
+      summonerItem.push(x.item1);
+      summonerItem.push(x.item2);
+      summonerItem.push(x.item3);
+      summonerItem.push(x.item4);
+      summonerItem.push(x.item5);
+      summonerItem.push(x.item6);
     }
   });
 
+  // 우리팀 적팀 구분
   participants.forEach((x, index) => {
     if (x.teamId == "100") {
       myteamlist.push({ champ: x.championName, name: x.summonerName });
@@ -106,15 +126,24 @@ getMatch = async (s, summoner) => {
     }
   });
 
+  // 게임모드 영->한
   if (matchInfo.data.info.gameMode == "ARAM") {
-    matchInfo.data.info.gameMode = "무작위총력전";
+    matchInfo.data.info.gameMode = "칼바람나락";
+  } else if (matchInfo.data.info.gameMode == "CLASSIC") {
+    matchInfo.data.infogameMode = "소환사의 협곡";
   }
 
   let allInfo = {
     gameType: matchInfo.data.info.gameMode,
     gameResult: win,
     champName: championName,
+    summonerLevel: summonerLevel,
+    timePlayed: timePlayed,
+    summonerItem: summonerItem,
+
     gameStat: stat,
+    killParticipation: killParticipation,
+
     myTeam: myteamlist,
     notmyTeam: notmyteamlist,
   };
