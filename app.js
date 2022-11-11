@@ -89,14 +89,18 @@ getMatch = async (matchId, summoner) => {
   let championName = null;
   let win = null;
   let stat = null;
+  let kda = null;
 
   let summonerLevel = null;
   let timePlayed = null;
   let killParticipation = null;
+  let summonerCs = null;
+
+  let summonerItem = [];
+  let summonerRunes = [];
 
   let myteamlist = [];
   let notmyteamlist = [];
-  let summonerItem = [];
 
   // 입력받은 유저의 정보
   participants.forEach((x, index) => {
@@ -107,6 +111,8 @@ getMatch = async (matchId, summoner) => {
       summonerLevel = x.summonerLevel;
       timePlayed = x.timePlayed;
       killParticipation = Math.round(x.challenges.killParticipation * 100);
+      summonerCs = x.totalMinionsKilled;
+      kda = x.challenges.kda.toFixed(2);
 
       summonerItem.push(x.item1);
       summonerItem.push(x.item2);
@@ -114,6 +120,10 @@ getMatch = async (matchId, summoner) => {
       summonerItem.push(x.item4);
       summonerItem.push(x.item5);
       summonerItem.push(x.item6);
+      // console.log(x.perks.styles[0].style);
+      // console.log(x.perks.styles[1].style);
+      summonerRunes.push(x.perks.styles[0].style);
+      summonerRunes.push(x.perks.styles[1].style);
     }
   });
 
@@ -132,6 +142,8 @@ getMatch = async (matchId, summoner) => {
   } else if (matchInfo.data.info.gameMode == "CLASSIC") {
     matchInfo.data.infogameMode = "소환사의 협곡";
   }
+  // console.log(matchInfo.data.info.participants.challenges);
+  // console.log(matchInfo.data.info);
 
   let allInfo = {
     gameType: matchInfo.data.info.gameMode,
@@ -140,6 +152,9 @@ getMatch = async (matchId, summoner) => {
     summonerLevel: summonerLevel,
     timePlayed: timePlayed,
     summonerItem: summonerItem,
+    summonerKda: kda,
+    summonerCS: summonerCs,
+    summonerRunes: summonerRunes,
 
     gameStat: stat,
     killParticipation: killParticipation,
