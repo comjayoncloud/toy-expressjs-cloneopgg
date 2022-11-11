@@ -114,14 +114,13 @@ getMatch = async (matchId, summoner) => {
       summonerCs = x.totalMinionsKilled;
       kda = x.challenges.kda.toFixed(2);
 
+      summonerItem.push(x.item0);
       summonerItem.push(x.item1);
       summonerItem.push(x.item2);
       summonerItem.push(x.item3);
       summonerItem.push(x.item4);
       summonerItem.push(x.item5);
       summonerItem.push(x.item6);
-      // console.log(x.perks.styles[0].style);
-      // console.log(x.perks.styles[1].style);
       summonerRunes.push(x.perks.styles[0].style);
       summonerRunes.push(x.perks.styles[1].style);
     }
