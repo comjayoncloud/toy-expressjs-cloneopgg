@@ -121,7 +121,8 @@ getMatch = async (matchId, summoner) => {
       summonerItem.push(x.item4);
       summonerItem.push(x.item5);
       summonerItem.push(x.item6);
-      summonerRunes.push(x.perks.styles[0].style);
+      console.log(x.perks.styles[0].selections[0].perk);
+      summonerRunes.push(x.perks.styles[0].selections[0].perk);
       summonerRunes.push(x.perks.styles[1].style);
     }
   });
@@ -141,8 +142,6 @@ getMatch = async (matchId, summoner) => {
   } else if (matchInfo.data.info.gameMode == "CLASSIC") {
     matchInfo.data.infogameMode = "소환사의 협곡";
   }
-  // console.log(matchInfo.data.info.participants.challenges);
-  // console.log(matchInfo.data.info);
 
   let allInfo = {
     gameType: matchInfo.data.info.gameMode,
