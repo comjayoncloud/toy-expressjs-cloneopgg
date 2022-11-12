@@ -16,7 +16,7 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
-const api_token = "RGAPI-96061d1e-1b27-4674-8276-96457a1517ff";
+const api_token = "RGAPI-bbcd980c-d46d-40c0-9430-6ea3c0b0121d";
 
 // 0. get 요청왔을때 respond 하는 함수
 
@@ -121,7 +121,6 @@ getMatch = async (matchId, summoner) => {
       summonerItem.push(x.item4);
       summonerItem.push(x.item5);
       summonerItem.push(x.item6);
-      console.log(x.perks.styles[0].selections[0].perk);
       summonerRunes.push(x.perks.styles[0].selections[0].perk);
       summonerRunes.push(x.perks.styles[1].style);
     }
