@@ -16,7 +16,7 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
-const api_token = "RGAPI-2d21eb55-26e5-4d84-a3f9-a0c62864f8dd";
+const api_token = "RGAPI-4e69dc21-4841-43e1-9aba-b33d65ccd7ee";
 
 // 0. get 요청왔을때 respond 하는 함수
 
