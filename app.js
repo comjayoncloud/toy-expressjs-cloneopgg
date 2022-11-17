@@ -16,21 +16,22 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
-//api token
 const api_token = "RGAPI-920c5c0b-dd99-4018-86b9-305d7508d335";
 
-// 한국서버 요청
 // 0. get 요청왔을때 respond 하는 함수
+app.get("/america/api/allinfo", (req, res) => {
+  res.send("연결됨요 ㅎ");
+});
 
-app.get("/api/allinfo/kr", async (req, res) => {
+app.get("/api/allinfo", async (req, res) => {
   console.log("connected");
-  const id = req.query.id;
-  const region = req.query.region;
 
-  const summoner = await getSummoner(id, region);
+  const id = req.query.id;
+
+  const summoner = await getSummoner(id);
+
   const matchIdList = await getMatchId(
-    `${summoner.puuid}/ids?start=0&count=20`,
-    region //puuid /ids?start=0&count=20`
+    `${summoner.puuid}/ids?start=0&count=20` //puuid /ids?start=0&count=20`
   );
 
   const matchList = [];
@@ -46,54 +47,35 @@ app.get("/api/allinfo/kr", async (req, res) => {
   res.json(matchList);
 });
 
+app.listen(port, () => {
+  console.log(`listening on port ${port}`);
+});
+
 // 1. puuid 요청하는 함수
-getSummoner = async (name, regionName) => {
-  console.log(regionName);
-  if (regionName == "Korea") {
-    const url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}`;
-    const encoded = encodeURI(url);
-    const summoner = await axios.get(encoded, {
-      headers: {
-        "X-Riot-Token": api_token,
-      },
-    });
-    return summoner.data;
-  } else if (regionName == "America") {
-    const url = `https://la1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}`;
-    const summoner = await axios.get(url, {
-      headers: {
-        "X-Riot-Token": api_token,
-      },
-    });
-    return summoner.data;
-  }
+getSummoner = async (name) => {
+  const url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}`;
+  // 인코딩
+  const encoded = encodeURI(url);
+  const summoner = await axios.get(encoded, {
+    headers: {
+      "X-Riot-Token": api_token,
+    },
+  });
+  return summoner.data;
 };
 
 // 2. 최근전적 20개 matchid 요청하는 함수   ex) ["1232141","123141421" ... ]
-getMatchId = async (puuid, regionName) => {
-  if (regionName == "Korea") {
-    const matchId = await axios.get(
-      `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}`,
-      {
-        headers: {
-          "X-Riot-Token": api_token,
-        },
-      }
-    );
+getMatchId = async (puuid) => {
+  const matchId = await axios.get(
+    `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}`,
+    {
+      headers: {
+        "X-Riot-Token": api_token,
+      },
+    }
+  );
 
-    return matchId.data;
-  } else if (regionName == "America") {
-    const matchId = await axios.get(
-      `https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}`,
-      {
-        headers: {
-          "X-Riot-Token": api_token,
-        },
-      }
-    );
-
-    return matchId.data;
-  }
+  return matchId.data;
 };
 
 // 3. riot api 에서 한 아이디에 대해 데이터를 요청 후 데이터를 커스텀마이징
@@ -182,7 +164,3 @@ getMatch = async (matchId, summoner) => {
   };
   return allInfo;
 };
-
-app.listen(port, () => {
-  console.log(`listening on port ${port}`);
-});
