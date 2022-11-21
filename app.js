@@ -22,7 +22,7 @@ const api_token = "RGAPI-47d3da7a-3a17-4639-8c8d-877b29bc84c7";
 app.get("/america/api/allinfo", async (req, res) => {
   console.log("america api server connected");
   const id = req.query.id;
-  var region = ["la1", "americas"];
+  var region = ["na1", "americas"];
   const summoner = await getSummoner(id, region[0]);
   const matchIdList = await getMatchId(
     `${summoner.puuid}/ids?start=0&count=20`,
