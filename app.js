@@ -25,7 +25,7 @@ app.get("/america/api/allinfo", async (req, res) => {
   var region = ["na1", "americas"];
   const summoner = await getSummoner(id, region[0]);
   const matchIdList = await getMatchId(
-    `${summoner.puuid}/ids?start=0&count=20`,
+    `${summoner.puuid}/ids?start=0&count=10`,
     region[1]
   );
 
@@ -49,7 +49,7 @@ app.get("/kr/api/allinfo", async (req, res) => {
   var region = ["kr", "asia"];
   const summoner = await getSummoner(id, region[0]);
   const matchIdList = await getMatchId(
-    `${summoner.puuid}/ids?start=0&count=20`,
+    `${summoner.puuid}/ids?start=0&count=10`,
     region[1]
   );
 
