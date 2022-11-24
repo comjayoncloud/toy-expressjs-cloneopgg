@@ -18,7 +18,24 @@ app.use(express.json());
 
 const api_token = "RGAPI-920c5c0b-dd99-4018-86b9-305d7508d335";
 
+app.get("/talk.gg", async (req, res) => {
+  console.log("api 서버 연결");
+  const data = await getApi();
+  res.json(data);
+});
+
+getApi = async () => {
+  console.log("getApi 실행");
+  const url = "https://op.gg/api/v1.0/internal/bypass/community";
+  // 인코딩
+  const summoner = await axios.get(url);
+  return summoner.data;
+};
+
 // 0. get 요청왔을때 respond 하는 함수
+app.get("/america/api/allinfo", (req, res) => {
+  res.send("연결됨요 ㅎ");
+});
 
 app.get("/api/allinfo", async (req, res) => {
   console.log("connected");
@@ -160,4 +177,18 @@ getMatch = async (matchId, summoner) => {
     notmyTeam: notmyteamlist,
   };
   return allInfo;
+};
+
+// talk gg 데이터 요청 반환 주소 및 함수
+app.get("/talkgg", async (req, res) => {
+  console.log("api 서버 연결");
+  const data = await getTalkgg();
+  res.json(data);
+});
+
+getTalkgg = async () => {
+  console.log("getApi 실행");
+  const url = "https://op.gg/api/v1.0/internal/bypass/community";
+  const data = await axios.get(url);
+  return data.data;
 };
