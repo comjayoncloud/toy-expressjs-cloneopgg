@@ -12,6 +12,7 @@ const request = require("request");
 const axios = require("axios");
 const { get } = require("request");
 const cors = require("cors");
+const { json } = require("express");
 
 app.use(cors());
 app.use(express.json());
@@ -188,13 +189,14 @@ getMatch = async (matchId, summoner, region) => {
 app.get("/talkgg", async (req, res) => {
   console.log("api 서버 연결");
   const data = await getTalkgg();
-  res.json(data);
+  res.send(data);
 });
 
 getTalkgg = async () => {
   console.log("getApi 실행");
   const url = "https://op.gg/api/v1.0/internal/bypass/community";
-  // 인코딩
-  const data = await axios.get(url);
-  return data.data;
+  const data = [];
+  const dataReq = await axios.get(url);
+  data.push(dataReq.data);
+  return data[0].data;
 };
