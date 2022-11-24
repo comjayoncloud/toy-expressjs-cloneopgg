@@ -183,3 +183,18 @@ getMatch = async (matchId, summoner, region) => {
   };
   return allInfo;
 };
+
+// talk gg 데이터 요청 반환 주소 및 함수
+app.get("/talkgg", async (req, res) => {
+  console.log("api 서버 연결");
+  const data = await getTalkgg();
+  res.json(data);
+});
+
+getTalkgg = async () => {
+  console.log("getApi 실행");
+  const url = "https://op.gg/api/v1.0/internal/bypass/community";
+  // 인코딩
+  const data = await axios.get(url);
+  return data.data;
+};
