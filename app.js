@@ -70,7 +70,7 @@ app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
 
-// 1. puuid 요청하는 함수
+/**1. puuid 요청하는 함수 */
 getSummoner = async (name, region) => {
   const url = `https://${region}.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}`;
   // 인코딩
@@ -83,7 +83,7 @@ getSummoner = async (name, region) => {
   return summoner.data;
 };
 
-// 2. 최근전적 20개 matchid 요청하는 함수   ex) ["1232141","123141421" ... ]
+/** 2. 최근전적 20개 matchid 요청하는 함수   ex) ["1232141","123141421" ... ]*/
 getMatchId = async (puuid, region) => {
   const matchId = await axios.get(
     `https://${region}.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}`,
