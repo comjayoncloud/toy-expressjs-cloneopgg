@@ -15,10 +15,9 @@ const cors = require("cors");
 
 app.use(cors());
 app.use(express.json());
-//test
 const api_token = "RGAPI-2fad9422-3366-4af1-8b1c-ad5fd15b1077";
 
-/**  0. get 요청 - 미국 서버 데이터*/
+/**  0. 미국서버 데이터 api - get */
 app.get("/america/api/allinfo", async (req, res) => {
   console.log("america api server connected");
   const id = req.query.id;
@@ -42,7 +41,7 @@ app.get("/america/api/allinfo", async (req, res) => {
   res.json(matchList);
 });
 
-/**0. get 요청 - 한국 서버 데이터 */
+/** 0. 한국서버 데이터 api - get */
 app.get("/kr/api/allinfo", async (req, res) => {
   console.log("korea api server connected");
   const id = req.query.id;
@@ -70,7 +69,7 @@ app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
 
-/**1. puuid 요청하는 함수 */
+/** 1. puuid 요청하는 함수 */
 getSummoner = async (name, region) => {
   const url = `https://${region}.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}`;
   // 인코딩
@@ -83,7 +82,7 @@ getSummoner = async (name, region) => {
   return summoner.data;
 };
 
-/** 2. 최근전적 20개 matchid 요청하는 함수   ex) ["1232141","123141421" ... ]*/
+/** 2. 최근전적 20개 matchid 요청하는 함수   ex) ["1232141","123141421" ... ] */
 getMatchId = async (puuid, region) => {
   const matchId = await axios.get(
     `https://${region}.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}`,
@@ -97,7 +96,7 @@ getMatchId = async (puuid, region) => {
   return matchId.data;
 };
 
-// 3. riot api 에서 한 아이디에 대해 데이터를 요청 후 데이터를 커스텀마이징
+/** 3. riot api 에서 한 아이디에 대해 데이터를 요청 후 데이터를 커스텀마이징 */
 getMatch = async (matchId, summoner, region) => {
   const matchInfo = await axios.get(
     `https://${region}.api.riotgames.com/lol/match/v5/matches/${matchId}`,
@@ -124,7 +123,7 @@ getMatch = async (matchId, summoner, region) => {
   let myteamlist = [];
   let notmyteamlist = [];
 
-  // 입력받은 유저의 정보
+  /** 입력받은 유저의 매치 내용  */
   participants.forEach((x, index) => {
     if (x.puuid == summoner.puuid) {
       championName = x.championName;
@@ -148,7 +147,7 @@ getMatch = async (matchId, summoner, region) => {
     }
   });
 
-  // 우리팀 적팀 구분
+  /**  우리팀 적팀 구분 */
   participants.forEach((x, index) => {
     if (x.teamId == "100") {
       myteamlist.push({ champ: x.championName, name: x.summonerName });
@@ -157,7 +156,7 @@ getMatch = async (matchId, summoner, region) => {
     }
   });
 
-  // 게임모드 영->한
+  /**  게임모드 영->한 */
   if (matchInfo.data.info.gameMode == "ARAM") {
     matchInfo.data.info.gameMode = "칼바람나락";
   } else if (matchInfo.data.info.gameMode == "CLASSIC") {
@@ -184,13 +183,14 @@ getMatch = async (matchId, summoner, region) => {
   return allInfo;
 };
 
-// talk gg 데이터 요청 반환 주소 및 함수
+/**  op.gg 게시판 데이터 api - get */
 app.get("/talkgg", async (req, res) => {
   console.log("api 서버 연결");
   const data = await getTalkgg();
   res.send(data);
 });
 
+/** op.gg 게시판 데이터 요청 함수 */
 getTalkgg = async () => {
   console.log("getApi 실행");
   const url = "https://op.gg/api/v1.0/internal/bypass/community";
