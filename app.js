@@ -16,9 +16,9 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 //test
-const api_token = "RGAPI-f0d79886-b2da-4840-b8f1-e1dcd02dfdab";
+const api_token = "RGAPI-2fad9422-3366-4af1-8b1c-ad5fd15b1077";
 
-// 0. get 요청 - 미국 서버 데이터
+/**  0. get 요청 - 미국 서버 데이터*/
 app.get("/america/api/allinfo", async (req, res) => {
   console.log("america api server connected");
   const id = req.query.id;
@@ -42,7 +42,7 @@ app.get("/america/api/allinfo", async (req, res) => {
   res.json(matchList);
 });
 
-// 0. get 요청 - 한국 서버 데이터
+/**0. get 요청 - 한국 서버 데이터 */
 app.get("/kr/api/allinfo", async (req, res) => {
   console.log("korea api server connected");
   const id = req.query.id;
