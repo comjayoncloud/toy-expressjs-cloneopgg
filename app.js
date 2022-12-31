@@ -15,7 +15,7 @@ const cors = require("cors");
 
 app.use(cors());
 app.use(express.json());
-const api_token = "RGAPI-160fb781-bc75-4397-9e99-f0752a907460";
+const api_token = "RGAPI-16da457f-5f5e-4f46-8538-52852a7e44e8";
 
 /**  0. 미국서버 데이터 api - get */
 app.get("/america/api/allinfo", async (req, res) => {
